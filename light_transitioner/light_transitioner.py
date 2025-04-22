@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import UInt8MultiArray, Int32
+from std_msgs.msg import UInt8MultiArray, Int32, Bool
 from geometry_msgs.msg import PoseStamped
 
 class LightTransitioner(Node):
@@ -13,6 +13,8 @@ class LightTransitioner(Node):
         # Subscribers
         self.create_subscription(PoseStamped, '/goal_pose', self.goal_callback, 10)
         self.create_subscription(Int32, '/check_goal_proximity', self.proximity_callback, 10)
+        self.create_subscription(Bool,'/toggle_vision/button',self.vision_toggle_callback,10)
+        
 
         self.publish_light([0, 2, 255, 255, 255])
         self.get_logger().info("Published initial light.")
@@ -31,6 +33,11 @@ class LightTransitioner(Node):
         if msg.data == 1:
             self.publish_light([0, 2, 255, 255, 255])
             self.get_logger().info("Close to goal → set lights to white.")
+            
+    def vision_toggle_callback(self, msg):
+        if msg.data: 
+            self.publish_light([2, 2, 255, 100, 0])
+            self.get_logger().info("Button true - Sent orange lights")
 
 def main(args=None):
     rclpy.init(args=args)
