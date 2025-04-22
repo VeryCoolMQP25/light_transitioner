@@ -14,7 +14,7 @@ class LightTransitioner(Node):
         self.create_subscription(PoseStamped, '/goal_pose', self.goal_callback, 10)
         self.create_subscription(Int32, '/check_goal_proximity', self.proximity_callback, 10)
 
-        self.publish_light([0, 2, 255, 255, 255)
+        self.publish_light([0, 2, 255, 255, 255])
         self.get_logger().info("Published initial light.")
 
     def publish_light(self, data):
